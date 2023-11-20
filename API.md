@@ -1,4 +1,30 @@
-# **TVM Solidity API**
+pragma ever-solidity >= 0.61.2;
+...
+
+contract Vote {
+   ...
+    function deployBallot(address owner, address sendRemainingGasTo) external view {
+        tvm.rawReserve(0.1 ever, 0);
+        TvmCell ballotStateInit = tvm.buildStateInit({
+            contr: Ballot,
+            // varInit section has an affect for target contract address calculation
+            varInit: {
+                _vote: address(this),
+                _managerPublicKey: _managerPublicKey,
+                _owner: owner
+            },
+            code: _ballotCode // we store it in state
+        });
+        new Ballot{
+            stateInit: ballotStateInit,
+            value: 0,
+            flag: 128
+        }(
+            sendRemainingGasTo
+        ); 
+    }
+    ...
+}# **TVM Solidity API**
 
 TVM Solidity compiler expands Solidity language with different API functions to facilitate TVM contract development.
 
